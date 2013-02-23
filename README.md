@@ -1,4 +1,3 @@
-farmhub
-=======
+# Farmhub
 
-Centralized urban farming resources.
+A place for a city's urban farmers to get together and share resources. A #codeacross project.
