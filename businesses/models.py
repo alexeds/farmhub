@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
+from .utils import get_coordinates
 
 class Business(models.Model):
     BUSINESS_TYPE_CHOICES = (
@@ -32,3 +33,20 @@ class Business(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ("business.detail", [self.pk])
+    
+    def get_address(self):
+        return "%s %s, %s %s" % (
+            self.address, 
+            self.city, 
+            self.state, 
+            self.zip,
+        )
+    
+    def save(self, *args, **kwargs):
+        self.guid = self.guid or unicode(uuid.uuid1())
+
+        # update latitude and longitude
+        if not all((self.latitude, self.longitude)):
+            self.latitude, self.longitude = get_coordinates(self.get_address())
+
+        super(Location, self).save(*args, **kwargs)
